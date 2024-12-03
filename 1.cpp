@@ -32,8 +32,8 @@ int main() {
      }
           my_air_ai.showGraphStructure();
      
-
-
+        my_air_ai.dijkstra("Islamabad","HongKong");
+        my_air_ai.dijkstraByDate("Islamabad","HongKong");
     // Free dynamically allocated memory
     delete[] flights;
     delete[] uniqueCities;

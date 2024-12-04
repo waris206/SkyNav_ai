@@ -105,5 +105,4 @@ void displayUniqueCities(const string* uniqueCities, int uniqueCount) {
     }
 }
 
-
 #endif

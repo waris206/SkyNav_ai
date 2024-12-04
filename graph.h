@@ -29,6 +29,24 @@ public:
          
     }
 
+    void insert(Flight F)
+    {
+        node *newnode = new node();
+        newnode->data = F;
+        
+        /*
+        if (head == nullptr)
+        {
+            head = newnode;
+            tail = newnode;
+            charges = getCharges(F)
+        }
+        */
+
+        tail->next = newnode;
+        tail = newnode;
+    }
+
     int getCharges(string val)
     {
          ifstream file("HotelCharges_perday.txt"); // File containing the city and charge data
@@ -52,29 +70,24 @@ public:
         return -1;
     }
 
-    node* findFlight(string dest)
+    AdjLst* findFlight(string dest)
     {
         node* temp = head;
-        
+        AdjLst* Nodelist = new AdjLst();
+        Nodelist->insert(this->head->data.departureCity);
+
         while (temp)
         {
             if (dest == temp->data.destinationCity)
             {
-                return temp;
+                // if (!Nodelist) {Nodelist = new AdjLst();}
+                Nodelist->insert(temp->data);
             }
             temp = temp->next;
         }
-        return nullptr;
+        return Nodelist;
     }
 
-    void insert(Flight F)
-    {
-        node *newnode = new node();
-        newnode->data = F;
-
-        tail->next = newnode;
-        tail = newnode;
-    }
     // simpel display of linkedlist
      void Display(){
          node *temp = head;
@@ -317,14 +330,12 @@ void directFlight(string src, string des)
     {
         if (arr[i].head->data.departureCity == src)
         {
-            node* f = arr[i].findFlight(des);
-            if(f) {f->data.display();}
+            AdjLst* possibleDirectFlights = arr[i].findFlight(des);
+            if(possibleDirectFlights->head->next) {possibleDirectFlights->Display();}
             else  { cout<<"No direct flight from "<<src<<" to "<<des<<endl; }
-                return;
-        }
+            return;
         }
     }
-    
 }
 
 };

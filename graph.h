@@ -14,6 +14,8 @@ class AdjLst
 public:
     node *head;
     node *tail;
+    int charges;
+
     void insert(string val)
     {
         node *newnode = new node();
@@ -22,8 +24,32 @@ public:
         {
             head = newnode;
             tail = newnode;
+            charges = getCharges(val);
         }
          
+    }
+
+    int getCharges(string val)
+    {
+         ifstream file("HotelCharges_perday.txt"); // File containing the city and charge data
+        if (!file.is_open()) {
+            cerr << "Unable to open the file." << endl; return -1;
+        }
+
+        string line, city;
+        int charge;
+
+        while ( getline(file, line)) {
+            stringstream iss(line);
+            iss >> city >> charge; // Extract city and charge from each line
+            if (city == val) {
+                file.close(); // Close the file once the value is found
+                return charge;
+            }
+        }
+
+        file.close(); // Close the file if the city isn't found.
+        return -1;
     }
 
     void insert(Flight F)
@@ -41,7 +67,7 @@ public:
          {
             if (temp == head)
             {
-               cout << temp->data.departureCity << endl;
+               cout << temp->data.departureCity << " " << charges << endl;
                temp = temp->next;
                continue;
             }

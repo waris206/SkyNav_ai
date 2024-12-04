@@ -32,4 +32,6 @@ int main()
             my_air_ai.insertEdge(flights[i]);
         }
             my_air_ai.showGraphStructure();
+            cout <<"Direct flight :"<<endl;
+            my_air_ai.directFlight("Seoul", "Newyork");         
 }

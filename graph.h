@@ -52,6 +52,21 @@ public:
         return -1;
     }
 
+    node* findFlight(string dest)
+    {
+        node* temp = head;
+        
+        while (temp)
+        {
+            if (dest == temp->data.destinationCity)
+            {
+                return temp;
+            }
+            temp = temp->next;
+        }
+        return nullptr;
+    }
+
     void insert(Flight F)
     {
         node *newnode = new node();
@@ -295,6 +310,22 @@ void dijkstra(string source, string destination) {
     cout<< endl;
 }
 
+// for bokkign of flight
+void directFlight(string src, string des)
+{
+    for (int i = 0; i < vert; i++)
+    {
+        if (arr[i].head->data.departureCity == src)
+        {
+            node* f = arr[i].findFlight(des);
+            if(f) {f->data.display();}
+            else  { cout<<"No direct flight from "<<src<<" to "<<des<<endl; }
+                return;
+        }
+        }
+    }
+    
+}
 
 };
 

@@ -147,16 +147,16 @@ public:
 
     // Initialize earliest dates to a very late date, visited to false, and parents to -1
     for (int i = 0; i < vert; i++) {
-        earliestDate[i] = "9999-12-31"; // A far future date
+        earliestDate[i] = "2025-12-31"; // A far future date
         visited[i] = false;
         parent[i] = -1;
     }
 
-    earliestDate[srcIdx] = "0000-01-01"; // Source starts with the earliest possible date
+    earliestDate[srcIdx] = "2018-01-01"; // Source starts with the earliest possible date
 
     for (int i = 0; i < vert; i++) {
         // Find the unvisited node with the earliest date
-        string minDate = "9999-12-31";
+        string minDate = "2025-12-31";
         int minIndex = -1;
         for (int j = 0; j < vert; j++) {
             if (!visited[j] && earliestDate[j] < minDate) {
@@ -293,6 +293,76 @@ void dijkstra(string source, string destination) {
         if (i > 0) cout << " -> ";
     }
     cout<< endl;
+}
+   void drawGraph() {
+    const int WINDOW_WIDTH = 800;
+    const int WINDOW_HEIGHT = 600;
+    const int RADIUS = 200; // Radius of the circular layout
+    const float CITY_RADIUS = 15.0f; // Radius of city circles
+
+    // Create a window
+    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Flight Graph Visualization");
+
+    // Calculate positions for each city in a circular layout
+    sf::Vector2f* positions = new sf::Vector2f[vert];
+    float centerX = WINDOW_WIDTH / 2.0f;
+    float centerY = WINDOW_HEIGHT / 2.0f;
+    float angleIncrement = 2 * M_PI / vert;
+
+    for (int i = 0; i < vert; i++) {
+        float angle = i * angleIncrement;
+        positions[i].x = centerX + RADIUS * cos(angle);
+        positions[i].y = centerY + RADIUS * sin(angle);
+    }
+
+    // Run the SFML visualization loop
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+        }
+
+        window.clear(sf::Color::White);
+
+        // Draw edges (flights)
+        for (int i = 0; i < vert; i++) {
+            node* temp = arr[i].head->next; // Skip the head node
+            while (temp != nullptr) {
+                // Find the index of the destination city
+                int destIndex = -1;
+                for (int j = 0; j < vert; j++) {
+                    if (arr[j].head->data.departureCity == temp->data.destinationCity) {
+                        destIndex = j;
+                        break;
+                    }
+                }
+
+                if (destIndex != -1) {
+                    sf::Vertex line[] = {
+                        sf::Vertex(positions[i], sf::Color::Red),
+                        sf::Vertex(positions[destIndex], sf::Color::Red)
+                    };
+                    window.draw(line, 2, sf::Lines);
+                }
+
+                temp = temp->next;
+            }
+        }
+
+        // Draw cities
+        for (int i = 0; i < vert; i++) {
+            sf::CircleShape cityCircle(CITY_RADIUS);
+            cityCircle.setFillColor(sf::Color::Blue);
+            cityCircle.setPosition(positions[i].x - CITY_RADIUS, positions[i].y - CITY_RADIUS);
+            window.draw(cityCircle);
+        }
+
+        window.display();
+    }
+
+    delete[] positions; // Clean up dynamically allocated memory
 }
 
 

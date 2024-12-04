@@ -88,6 +88,24 @@ public:
         return Nodelist;
     }
 
+    AdjLst* findFlight(string dest, string airline)
+    {
+        node* temp = head;
+        AdjLst* Nodelist = new AdjLst();
+        Nodelist->insert(this->head->data.departureCity);
+
+        while (temp)
+        {
+            if (dest == temp->data.destinationCity && airline == temp->data.airline)
+            {
+                // if (!Nodelist) {Nodelist = new AdjLst();}
+                Nodelist->insert(temp->data);
+            }
+            temp = temp->next;
+        }
+        return Nodelist;
+    } 
+
     // simpel display of linkedlist
      void Display(){
          node *temp = head;
@@ -333,6 +351,20 @@ void directFlight(string src, string des)
             AdjLst* possibleDirectFlights = arr[i].findFlight(des);
             if(possibleDirectFlights->head->next) {possibleDirectFlights->Display();}
             else  { cout<<"No direct flight from "<<src<<" to "<<des<<endl; }
+            return;
+        }
+    }
+}
+
+void directFlightAirline(string src, string des, string airline)
+{
+    for (int i = 0; i < vert; i++)
+    {
+        if (arr[i].head->data.departureCity == src)
+        {
+            AdjLst* possibleDirectFlights = arr[i].findFlight(des, airline);
+            if(possibleDirectFlights->head->next) {possibleDirectFlights->Display();}
+            else  { cout<<"No direct flight from "<<src<<" to "<<des<<" by "<<airline<<endl; }
             return;
         }
     }

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include "color.h"
 using namespace std;
 
 // Class to represent a Flight
@@ -24,11 +25,11 @@ public:
 
     // Display flight information
     void display() const {
-        cout << departureCity << " -> " << destinationCity
+        cout << BOLD_GREEN << departureCity << " -> " << destinationCity
              << ", Date: " << date
              << ", Time: " << time1 << " to " << time2
-             << ", Price: " << price
-             << ", Airline: " << airline << endl;
+             << ", Price: " << BOLD_YELLOW << price
+             << RESET << ", Airline: " << BOLD_CYAN << airline << RESET << endl;
     }
 };
 
@@ -40,7 +41,7 @@ void readFlights(Flight*& flights, int& count) {
     // Open the file
     ifstream file("Flights.txt");
     if (!file.is_open()) {
-        cerr << "Error opening file!" << endl;
+        cerr << BOLD_RED << "Error opening file!" << RESET << endl;
         return;
     }
 
@@ -99,9 +100,9 @@ void getUniqueCities(const Flight* flights, int flightCount, string*& uniqueCiti
 
 // Function to display unique cities
 void displayUniqueCities(const string* uniqueCities, int uniqueCount) {
-    cout << "\nUnique Cities (" << uniqueCount << "):\n";
+    cout << BOLD_BLUE << "\nUnique Cities (" << uniqueCount << "):" << RESET << endl;
     for (int i = 0; i < uniqueCount; i++) {
-        cout << uniqueCities[i] << endl;
+        cout << BOLD_CYAN << uniqueCities[i] << RESET << endl;
     }
 }
 

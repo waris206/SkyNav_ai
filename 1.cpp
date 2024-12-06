@@ -136,7 +136,7 @@ int main() {
                         cin >> to;
                         cout << GREEN << "Enter transit city: " << RESET;
                         cin >> transit;
-                        my_air_ai.transitFlight(from, to, transit);
+                        my_air_ai.transitFlight(from, transit, to);
                     } else if (transitChoice == 2) {
                         string from, to, transit, airline;
                         cout << GREEN << "Enter source city: " << RESET;
@@ -147,7 +147,7 @@ int main() {
                         cin >> transit;
                         cout << GREEN << "Enter airline: " << RESET;
                         cin >> airline;
-                        my_air_ai.transitFlight_airline_matters(from, to, transit, airline);
+                        my_air_ai.transitFlight_airline_matters(from, transit, to, airline);
                     } 
                     else if (transitChoice != 4) {
                         cout << BOLD_RED << "Invalid choice! Try again.\n" << RESET;

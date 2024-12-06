@@ -481,7 +481,7 @@ public:
                                 while (second_half)
                                 {
                                     if (second_half->data.destinationCity == des &&
-                                        second_half->data.time1 > first_half->data.time2 and second_half->data.date >first_half->data.date)
+                                        second_half->data.time1 > first_half->data.time2 and second_half->data.date  == first_half->data.date)
                                     {
 
                                         cout << "\033[1;32mTransit Flight Found:\033[0m\n";
@@ -491,6 +491,17 @@ public:
                                         second_half->data.display();
                                         return true;
                                     }
+                                    else if (second_half->data.destinationCity == des &&
+                                        second_half->data.date > first_half->data.date)
+                                    {
+                                      cout << "\033[1;32mTransit Flight Found:\033[0m\n";
+                                        cout << "\033[1;33mFirst Half:\033[0m\n";
+                                        first_half->data.display();
+                                        cout << "\033[1;33mSecond Half:\033[0m\n";
+                                        second_half->data.display();
+                                        return true;
+                                    }
+                                    
                                     second_half = second_half->next;
                                 }
                             }
@@ -526,7 +537,7 @@ public:
                                 node *second_half = arr[j].head->next;
                                 while (second_half)
                                 {
-                                    if (second_half->data.destinationCity == des and second_half->data.airline == air)
+                                    if (second_half->data.destinationCity == des and second_half->data.airline == air && second_half->data.date >= first_half->data.date)
                                     {
 
                                         cout << "\033[1;32mTransit Flight Found with Airline " << air << ":\033[0m\n";

@@ -2,6 +2,7 @@
 #define GRAPH_H
 #include "flight.h"
 #include "color.h"
+#include"MIDJourney.h"
 class node
 {
 public:
@@ -481,7 +482,7 @@ public:
                                 while (second_half)
                                 {
                                     if (second_half->data.destinationCity == des &&
-                                        second_half->data.time1 > first_half->data.time2 and second_half->data.date  == first_half->data.date)
+                                        second_half->data.time1 > first_half->data.time2 && second_half->data.date == first_half->data.date)
                                     {
 
                                         cout << "\033[1;32mTransit Flight Found:\033[0m\n";
@@ -492,16 +493,16 @@ public:
                                         return true;
                                     }
                                     else if (second_half->data.destinationCity == des &&
-                                        second_half->data.date > first_half->data.date)
+                                             second_half->data.date > first_half->data.date)
                                     {
-                                      cout << "\033[1;32mTransit Flight Found:\033[0m\n";
+                                        cout << "\033[1;32mTransit Flight Found:\033[0m\n";
                                         cout << "\033[1;33mFirst Half:\033[0m\n";
                                         first_half->data.display();
                                         cout << "\033[1;33mSecond Half:\033[0m\n";
                                         second_half->data.display();
                                         return true;
                                     }
-                                    
+
                                     second_half = second_half->next;
                                 }
                             }
@@ -527,7 +528,7 @@ public:
                 node *first_half = arr[i].head->next; // First half of the journey
                 while (first_half)
                 {
-                    if (first_half->data.destinationCity == inter and first_half->data.airline == air)
+                    if (first_half->data.destinationCity == inter && first_half->data.airline == air)
                     {
                         // Find the second half...
                         for (int j = 0; j < vert; j++)
@@ -537,7 +538,7 @@ public:
                                 node *second_half = arr[j].head->next;
                                 while (second_half)
                                 {
-                                    if (second_half->data.destinationCity == des and second_half->data.airline == air && second_half->data.date >= first_half->data.date)
+                                    if (second_half->data.destinationCity == des && second_half->data.airline == air && second_half->data.date >= first_half->data.date)
                                     {
 
                                         cout << "\033[1;32mTransit Flight Found with Airline " << air << ":\033[0m\n";
@@ -560,6 +561,59 @@ public:
         cout << "\033[1;31mNo transit flight found from " << src << " to " << des << " via " << inter << " with airline " << air << "\033[0m\n";
         return false;
     }
+    /****************************************************MID JOURNEY **************************** */
+    Journey planMultiLegJourney(string source, string stops[], int numStops, string destination)
+    {
+        Journey journey; 
+        string currentCity = source;
+
+      
+        for (int i = 0; i <= numStops; i++)
+        {
+            string nextCity = (i == numStops) ? destination : stops[i]; 
+
+            bool flightFound = false;
+
+            // Find the flight for the current location .. 
+            for (int j = 0; j < vert; j++)
+            {
+                if (arr[j].head->data.departureCity == currentCity)
+                {
+                    node *temp = arr[j].head->next;
+                    while (temp)
+                    {
+                        if (temp->data.destinationCity == nextCity)
+                        {
+                            // this condition as..cehck that date of new flight is greater than prev...adding flight ..necessary check 
+                            if (!journey.head || temp->data.date > journey.tail->data.date)
+                            {
+                                journey.insertFlight(temp->data); 
+                                flightFound = true;
+                                break;
+                            }
+                        }
+                        temp = temp->next;
+                    }
+                }
+
+                if (flightFound)
+                    break;
+            }
+
+            // If no flight is found for the current segment
+            if (!flightFound)
+            {
+                cout <<RED << "No valid flight from " << currentCity << " to " << nextCity << RESET << endl;
+                journey.clearJourney(); // Cleanup
+                return journey;
+            }
+
+            currentCity = nextCity; // Move to the next city
+        }
+
+        return journey; // Return the completed journey
+    }
 };
+
 
 #endif

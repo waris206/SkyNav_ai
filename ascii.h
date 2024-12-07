@@ -87,4 +87,30 @@ void printAsciiArtWithDelay() {
 }
 
 
+void displayGoodbyeScreen() {
+    system("cls"); // Clear the screen before starting the goodbye animation
+    string goodbyeArt = R"(
+  ____  ___   ___  ____    ______   _______ 
+ / ___|/ _ \ / _ \|  _ \  | __ ) \ / / ____|
+| |  _| | | | | | | | | | |  _ \\ V /|  _|  
+| |_| | |_| | |_| | |_| | | |_) || | | |___ 
+ \____|\___/ \___/|____/  |____/ |_| |_____|
+    )";
+
+    // Print the goodbye message with colors
+    for (char ch : goodbyeArt) {
+        if (ch == '\n') {
+            cout << endl;
+            continue;
+        }
+        cout << BOLD_RED << ch << RESET;
+        Sleep(20); // Slight delay for a typewriter effect
+    }
+
+    Sleep(1000); // Keep the message visible for a while
+    cout << "\n\t\tThank you for using SkyNav AI!" << endl;
+    Sleep(1000);
+
+    system("cls"); // Clear the screen as the goodbye animation ends
+}
 #endif

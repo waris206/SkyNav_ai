@@ -272,6 +272,7 @@ int main()
         }
 
         case 5:
+              displayGoodbyeScreen();
             cout << BOLD_GREEN << "Exiting the program. Goodbye!\n"
                  << RESET;
             break;

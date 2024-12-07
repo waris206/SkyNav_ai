@@ -100,10 +100,7 @@ int main()
     }
 
     // Main Menu Loop
-    int mainChoice = 0;
-    do
-    {
-          playSound();
+    playSound();
           
           displayWelcome();
 
@@ -113,6 +110,10 @@ int main()
           playwelcomesound();
           cout << BOLD_MAGENTA << "\nPress Enter to continue..." << RESET;
           cin.get();
+    int mainChoice = 0;
+    do
+    {
+          
         
         printMenu();
         cin >> mainChoice;
@@ -271,6 +272,7 @@ int main()
         }
 
         case 5:
+              displayGoodbyeScreen();
             cout << BOLD_GREEN << "Exiting the program. Goodbye!\n"
                  << RESET;
             break;

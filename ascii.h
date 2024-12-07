@@ -113,4 +113,56 @@ void displayGoodbyeScreen() {
 
     system("cls"); // Clear the screen as the goodbye animation ends
 }
+
+void printContributors() {
+    // Contributors ASCII Art Header
+    string contributorsHeader = R"(
+    
+    __   ___   ____   ______  ____   ____  ____   __ __  ______   ___   ____    _____
+   /  ] /   \ |    \ |      ||    \ |    ||    \ |  |  ||      | /   \ |    \  / ___/
+  /  / |     ||  _  ||      ||  D  ) |  | |  o  )|  |  ||      ||     ||  D  )(   \_ 
+ /  /  |  O  ||  |  ||_|  |_||    /  |  | |     ||  |  ||_|  |_||  O  ||    /  \__  |
+/   \_ |     ||  |  |  |  |  |    \  |  | |  O  ||  :  |  |  |  |     ||    \  /  \ |
+\     ||     ||  |  |  |  |  |  .  \ |  | |     ||     |  |  |  |     ||  .  \ \    |
+ \____| \___/ |__|__|  |__|  |__|\_||____||_____| \__,_|  |__|   \___/ |__|\_|  \___|
+                                                                                     
+
+
+)";
+     // Display header with colors
+    cout << BOLD_GREEN << contributorsHeader << RESET << endl;
+
+    // List of contributors with style and animation
+    string contributors[] = {
+        "1-> M. Akash Waris",
+        "2-> Habib Ahmed",
+        "3-> Abdullah Noman"
+    };
+
+    cout << BOLD_CYAN << "\nContributors:\n" << RESET;
+
+    for (const string& contributor : contributors) {
+        for (char c : contributor) {
+            cout << BOLD_YELLOW << c << RESET;
+            Sleep(50);  // Adds a typing effect
+        }
+        cout << endl;
+        Sleep(200);  // Pause between names
+    }
+
+    // Thank you message
+    string thankYouMessage = R"(
+   Thank you for exploring SkyNav AI. 
+   Made with passion and creativity!
+)";
+    for (char c : thankYouMessage) {
+        cout << BOLD_MAGENTA << c << RESET;
+        Sleep(30);  // Adds a typing effect
+    }
+    cout << endl;
+
+    // Pause for effect
+    Sleep(3000);
+}
+
 #endif

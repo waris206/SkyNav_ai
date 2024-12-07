@@ -273,6 +273,7 @@ int main()
 
         case 5:
               displayGoodbyeScreen();
+              playContributions();
               printContributors();
             cout << BOLD_GREEN << "Exiting the program. Goodbye!\n"
                  << RESET;

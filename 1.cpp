@@ -1,18 +1,11 @@
 #include "graph.h"
 #include "MIDJourney.h"
 #include "color.h"
+#include "ascii.h"
 #include <iostream>
 using namespace std;
 
-// Function to print a simple banner
-void printBanner()
-{
-    cout << BOLD_CYAN << "--------------------------------------------\n";
-    cout << "|       " << BOLD_YELLOW << "Welcome to My Airline System!" << BOLD_CYAN << "      |\n";
-    cout << "|  " << BOLD_GREEN << "Manage your flights and connections!" << BOLD_CYAN << "    |\n";
-    cout << "--------------------------------------------\n"
-         << RESET;
-}
+
 
 // Function to print the main menu
 void printMenu()
@@ -110,7 +103,17 @@ int main()
     int mainChoice = 0;
     do
     {
-        printBanner();
+          playSound();
+          
+          displayWelcome();
+
+     
+          printAsciiArtWithDelay();
+          
+          playwelcomesound();
+          cout << BOLD_MAGENTA << "\nPress Enter to continue..." << RESET;
+          cin.get();
+        
         printMenu();
         cin >> mainChoice;
 

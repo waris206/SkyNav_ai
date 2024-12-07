@@ -16,6 +16,10 @@ void playwelcomesound() {
     // Replace the path with the location of your .wav file
     PlaySound(TEXT("welcome.wav"), NULL, SND_FILENAME | SND_ASYNC);
 }
+void playContributions() {
+    // Replace the path with the location of your .wav file
+    PlaySound(TEXT("contributions.wav"), NULL, SND_FILENAME | SND_ASYNC);
+}
 // Function to print text character by character with a delay
 void printCharByChar(const string& text, const string& color = RESET) {
     for (char ch : text) {

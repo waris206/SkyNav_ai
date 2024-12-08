@@ -4,22 +4,37 @@
 #include "color.h" // Include your color library
 #include <iostream>
 #include <windows.h>  // For Sleep and clearing the console
+#include <SFML/Audio.hpp>
 using namespace std;
 
 
 // Function to play a sound at the beginning
-void playSound() {
-    // Replace the path with the location of your .wav file
-    PlaySound(TEXT("sound.wav"), NULL, SND_FILENAME | SND_ASYNC);
-}
-void playwelcomesound() {
-    // Replace the path with the location of your .wav file
-    PlaySound(TEXT("welcome.wav"), NULL, SND_FILENAME | SND_ASYNC);
-}
-void playContributions() {
-    // Replace the path with the location of your .wav file
-    PlaySound(TEXT("contributions.wav"), NULL, SND_FILENAME | SND_ASYNC);
-}
+//void playSound() {
+//     Replace the path with the location of your .wav file
+//    PlaySound(TEXT("sound.wav"), NULL, SND_FILENAME | SND_ASYNC);
+//}
+//void playwelcomesound() {
+//     Replace the path with the location of your .wav file
+//    PlaySound(TEXT("welcome.wav"), NULL, SND_FILENAME | SND_ASYNC);
+//}
+
+
+class SoundPlayer {
+public:
+    void playSound(const std::string& filename) {
+        if (!buffer.loadFromFile(filename)) {
+            std::cerr << "Error loading sound file: " << filename << std::endl;
+            return;
+        }
+        sound.setBuffer(buffer);
+        sound.play();
+    }
+
+private:
+    sf::SoundBuffer buffer;
+    sf::Sound sound;
+};
+
 // Function to print text character by character with a delay
 void printCharByChar(const string& text, const string& color = RESET) {
     for (char ch : text) {
@@ -90,7 +105,6 @@ void printAsciiArtWithDelay() {
     Sleep(500); // Final delay after printing the ASCII art
 }
 
-
 void displayGoodbyeScreen() {
     system("cls"); // Clear the screen before starting the goodbye animation
     string goodbyeArt = R"(
@@ -133,7 +147,7 @@ void printContributors() {
 
 
 )";
-     // Display header with colors
+    // Display header with colors
     cout << BOLD_GREEN << contributorsHeader << RESET << endl;
 
     // List of contributors with style and animation

@@ -3,6 +3,9 @@
 #include "flight.h"
 #include "color.h"
 #include"MIDJourney.h"
+#include <iostream>
+using namespace std;
+
 class node
 {
 public:
@@ -168,122 +171,109 @@ public:
             cout << endl;
         }
     }
-    void dijkstraByDate(string source, string destination)
-    {
+
+    Journey* dijkstraByDate(string source, string destination) {
+        Journey* journey = new Journey();
         // Map each city to an index
-        string cityMap[vert];
-        for (int i = 0; i < vert; i++)
-        {
+        string* cityMap = new string[vert];
+        for (int i = 0; i < vert; i++) {
             cityMap[i] = arr[i].head->data.departureCity;
         }
-
         // Find indices for source and destination
         int srcIdx = -1, destIdx = -1;
-        for (int i = 0; i < vert; i++)
-        {
-            if (cityMap[i] == source)
-                srcIdx = i;
-            if (cityMap[i] == destination)
-                destIdx = i;
+        for (int i = 0; i < vert; i++) {
+            if (cityMap[i] == source) srcIdx = i;
+            if (cityMap[i] == destination) destIdx = i;
         }
-
-        if (srcIdx == -1 || destIdx == -1)
-        {
+        if (srcIdx == -1 || destIdx == -1) {
             cout << "\033[1;31mSource or destination city not found.\033[0m" << endl;
-            return;
+            return NULL;
         }
-
         // Arrays for earliest dates, visited status, and parent tracking
-        string earliestDate[vert];
-        bool visited[vert];
-        int parent[vert];
+        string* earliestDate = new string[vert];
+        bool* visited = new bool[vert];
+        int* parent = new int[vert];
+        Flight* parentFlight = new Flight[vert]; // Store the actual flight for each path segment
 
         // Initialize earliest dates to a very late date, visited to false, and parents to -1
-        for (int i = 0; i < vert; i++)
-        {
+        for (int i = 0; i < vert; i++) {
             earliestDate[i] = "9999-12-31"; // A far future date
             visited[i] = false;
             parent[i] = -1;
         }
-
         earliestDate[srcIdx] = "0000-01-01"; // Source starts with the earliest possible date
-
-        for (int i = 0; i < vert; i++)
-        {
+        for (int i = 0; i < vert; i++) {
             // Find the unvisited node with the earliest date
             string minDate = "9999-12-31";
             int minIndex = -1;
-            for (int j = 0; j < vert; j++)
-            {
-                if (!visited[j] && earliestDate[j] < minDate)
-                {
+            for (int j = 0; j < vert; j++) {
+                if (!visited[j] && earliestDate[j] < minDate) {
                     minDate = earliestDate[j];
                     minIndex = j;
                 }
             }
-
-            if (minIndex == -1)
-                break; // No more reachable nodes
+            if (minIndex == -1) break; // No more reachable nodes
             visited[minIndex] = true;
-
             // Relax the edges from the current node
-            node *temp = arr[minIndex].head->next;
-            while (temp != nullptr)
-            {
+            node* temp = arr[minIndex].head->next;
+            while (temp != nullptr) {
                 int neighborIndex = -1;
-                for (int k = 0; k < vert; k++)
-                {
-                    if (cityMap[k] == temp->data.destinationCity)
-                    {
+                for (int k = 0; k < vert; k++) {
+                    if (cityMap[k] == temp->data.destinationCity) {
                         neighborIndex = k;
                         break;
                     }
                 }
-
-                if (neighborIndex != -1 && !visited[neighborIndex])
-                {
+                if (neighborIndex != -1 && !visited[neighborIndex]) {
                     // Check if the current flight's date is earlier
-                    if (temp->data.date > earliestDate[minIndex] && temp->data.date < earliestDate[neighborIndex])
-                    {
+                    if (temp->data.date > earliestDate[minIndex] && temp->data.date < earliestDate[neighborIndex]) {
                         earliestDate[neighborIndex] = temp->data.date;
                         parent[neighborIndex] = minIndex;
+                        parentFlight[neighborIndex] = temp->data; // Store the actual flight
                     }
                 }
                 temp = temp->next;
             }
         }
+        // Check if a path exists
+        if (earliestDate[destIdx] == "9999-12-31") {
+            cout << "\033[1;31mNo path exists from " << source << " to " << destination << "\033[0m" << endl;
+            return NULL;
+        }
 
         // Print the shortest path by date
-        if (earliestDate[destIdx] == "9999-12-31")
-        {
-            cout << "\033[1;31mNo path exists from " << source << " to " << destination << "\033[0m" << endl;
-            return;
-        }
-
-        cout << "\033[1;32mEarliest Path from " << source << " to " << destination << " arrives on: " << earliestDate[destIdx] << "\033[0m" << endl;
+        cout << "\033[1;32mEarliest Path from " << source << " to " << destination
+            << " arrives on: " << earliestDate[destIdx] << "\033[0m" << endl;
         cout << "\033[1;33mPath: \033[0m";
-        int path[vert], pathLen = 0;
-        for (int at = destIdx; at != -1; at = parent[at])
-        {
+
+        int pathLen = 0;
+        int* path = new int[vert];
+        for (int at = destIdx; at != -1; at = parent[at]) {
             path[pathLen++] = at;
         }
-        for (int i = pathLen - 1; i >= 0; i--)
-        {
-            cout << "\033[1;34m" << cityMap[path[i]] << "\033[0m";
-            if (i > 0)
-                cout << " \033[1;33m-> \033[0m";
+
+        // Insert flights into the journey and print path
+        for (int i = pathLen - 1; i > 0; i--) {
+            journey->insertFlight(parentFlight[path[i-1]]);
+
+            // Print path
+            cout << "\033[1;34m" << cityMap[path[i]] << "\033[0m" << " \033[1;33m-> \033[0m";
         }
-        cout << endl;
+        // Print final destination
+        cout << "\033[1;34m" << cityMap[path[0]] << "\033[0m" << endl;
+
+        return journey;
     }
-    void dijkstra(string source, string destination)
+
+    Journey* dijkstra(string source, string destination)
     {
+        Journey* journey = new Journey();
         // Map each city to an index
-        string cityMap[vert];
+        string* cityMap = new string[vert];
         for (int i = 0; i < vert; i++)
         {
             cityMap[i] = arr[i].head->data.departureCity;
         }
-
         // Find indices for source and destination
         int srcIdx = -1, destIdx = -1;
         for (int i = 0; i < vert; i++)
@@ -293,18 +283,15 @@ public:
             if (cityMap[i] == destination)
                 destIdx = i;
         }
-
         if (srcIdx == -1 || destIdx == -1)
         {
             cout << "\033[1;31mSource or destination city not found.\033[0m" << endl;
-            return;
+            return NULL; // returns null invalid src / des
         }
-
         // Arrays for distances, visited status, and parent tracking
-        int distances[vert];
-        bool visited[vert];
-        int parent[vert];
-
+        int* distances = new int[vert];
+        bool* visited = new bool[vert];
+        int* parent = new int[vert];
         // Initialize distances to infinity, visited to false, and parents to -1
         for (int i = 0; i < vert; i++)
         {
@@ -312,9 +299,7 @@ public:
             visited[i] = false;
             parent[i] = -1;
         }
-
         distances[srcIdx] = 0; // Distance to the source is 0
-
         for (int i = 0; i < vert; i++)
         {
             // Find the unvisited node with the smallest distance
@@ -327,13 +312,11 @@ public:
                     minIndex = j;
                 }
             }
-
             if (minIndex == -1)
                 break; // No more reachable nodes
             visited[minIndex] = true;
-
             // Relax the edges from the current node
-            node *temp = arr[minIndex].head->next;
+            node* temp = arr[minIndex].head->next;
             while (temp != nullptr)
             {
                 int neighborIndex = -1;
@@ -345,7 +328,6 @@ public:
                         break;
                     }
                 }
-
                 if (neighborIndex != -1 && !visited[neighborIndex])
                 {
                     int newDist = distances[minIndex] + temp->data.price; // Use price as weight
@@ -358,31 +340,53 @@ public:
                 temp = temp->next;
             }
         }
-
         // Print the shortest path and total price
         if (distances[destIdx] == 1e9)
         {
             cout << "\033[1;31mNo path exists from " << source << " to " << destination << "\033[0m" << endl;
-            return;
+            return NULL;
         }
-
         cout << "\033[1;32mCheapest Path from " << source << " to " << destination << " costs: " << distances[destIdx] << "\033[0m" << endl;
         cout << "\033[1;33mPath: \033[0m";
-        int path[vert], pathLen = 0;
+        int pathLen = 0;
+        int* path = new int[vert];
         for (int at = destIdx; at != -1; at = parent[at])
         {
             path[pathLen++] = at;
         }
-        for (int i = pathLen - 1; i >= 0; i--)
+
+        // Find the actual flight details for each path segment
+        for (int i = pathLen - 1; i > 0; i--)
         {
-            cout << "\033[1;34m" << cityMap[path[i]] << "\033[0m";
-            if (i > 0)
-                cout << " \033[1;33m-> \033[0m";
+            // Find the flight connecting the current two cities
+            node* temp = arr[path[i]].head->next;
+            while (temp != nullptr)
+            {
+                if (temp->data.destinationCity == cityMap[path[i - 1]])
+                {
+                    // Insert the flight with its actual details
+                    journey->insertFlight(temp->data);
+                    break;
+                }
+                temp = temp->next;
+            }
+
+            // Print path
+            cout << "\033[1;34m" << cityMap[path[i]] << "\033[0m" << " \033[1;33m-> \033[0m";
         }
-        cout << endl;
+        // Print final destination
+        cout << "\033[1;34m" << cityMap[path[0]] << "\033[0m" << endl;
+
+        delete[] cityMap;
+        delete[] distances;
+        delete[] visited;
+        delete[] parent;
+        delete[] path;
+        return journey;
     }
+
     // for bokkign of flight
-    void directFlight(string src, string des)
+    AdjLst* directFlight(string src, string des)
     {
         for (int i = 0; i < vert; i++)
         {
@@ -393,18 +397,21 @@ public:
                 {
                     cout << "\033[1;32mDirect flights from " << src << " to " << des << ":\033[0m\n";
                     possibleDirectFlights->Display();
+                    return possibleDirectFlights;
                 }
                 else
                 {
                     cout << "\033[1;31mNo direct flight from " << src << " to " << des << "\033[0m\n";
+                    return nullptr;
                 }
-                return;
             }
         }
     }
 
-    void directFlight_withDate(string src, string des, string d)
+    Journey* directFlight_withDate(string src, string des, string d)
     {
+        Journey* returnList = new Journey();
+
         for (int i = 0; i < vert; i++)
         {
             if (arr[i].head->data.departureCity == src)
@@ -417,6 +424,7 @@ public:
                     {
                         cout << "\033[1;32mDirect flight found from " << src << " to " << des << " on " << d << ":\033[0m\n";
                         temp->data.display();
+                        returnList->insertFlight(temp->data);
                         flight_found = true;
                     }
                     temp = temp->next;
@@ -424,15 +432,18 @@ public:
                 if (!flight_found)
                 {
                     cout << "\033[1;31mNo direct flight found from " << src << " to " << des << " on " << d << "\033[0m\n";
+                    return NULL;
                 }
-                return;
+                return returnList;
             }
         }
         cout << "\033[1;31mNo direct flight found from " << src << " to " << des << "\033[0m\n";
+        return NULL;
     }
 
-    void directFlight_withAIRLINE(string src, string des, string AIRLINE)
+    Journey* directFlight_withAIRLINE(string src, string des, string AIRLINE)
     {
+        Journey* returnList = new Journey();
         for (int i = 0; i < vert; i++)
         {
             if (arr[i].head->data.departureCity == src)
@@ -445,6 +456,7 @@ public:
                     {
                         cout << "\033[1;32mDirect flight found from " << src << " to " << des << " on " << AIRLINE << ":\033[0m\n";
                         temp->data.display();
+                        returnList->insertFlight(temp->data);
                         flight_found = true;
                     }
                     temp = temp->next;
@@ -452,17 +464,19 @@ public:
                 if (!flight_found)
                 {
                     cout << "\033[1;31mNo direct flight found from " << src << " to " << des << " on " << AIRLINE << "\033[0m\n";
+                    return NULL;
                 }
-                return;
+                return returnList;
             }
         }
         cout << "\033[1;31mNo direct flight found from " << src << " to " << des << "\033[0m\n";
+        return NULL;
     }
 
     // fucntion to have transit between . two locations.. and after find inter location we ask from user also after showing
-    bool transitFlight(string src, string inter, string des)
+    Journey* transitFlight(string src, string inter, string des)
     {
-
+        Journey* returnList = new Journey();
         for (int i = 0; i < vert; i++)
         {
             if (arr[i].head->data.departureCity == src)
@@ -487,9 +501,11 @@ public:
                                         cout << "\033[1;32mTransit Flight Found:\033[0m\n";
                                         cout << "\033[1;33mFirst Half:\033[0m\n";
                                         first_half->data.display();
+                                        returnList->insertFlight(first_half->data);
                                         cout << "\033[1;33mSecond Half:\033[0m\n";
                                         second_half->data.display();
-                                        return true;
+                                        returnList->insertFlight(second_half->data);
+                                        return returnList;
                                     }
                                     else if (second_half->data.destinationCity == des &&
                                              second_half->data.date > first_half->data.date)
@@ -497,9 +513,11 @@ public:
                                         cout << "\033[1;32mTransit Flight Found:\033[0m\n";
                                         cout << "\033[1;33mFirst Half:\033[0m\n";
                                         first_half->data.display();
+                                        returnList->insertFlight(first_half->data);
                                         cout << "\033[1;33mSecond Half:\033[0m\n";
                                         second_half->data.display();
-                                        return true;
+                                        returnList->insertFlight(second_half->data);
+                                        return returnList;
                                     }
 
                                     second_half = second_half->next;
@@ -513,13 +531,13 @@ public:
         }
 
         cout << "\033[1;31mNo transit flight found from " << src << " to " << des << " via " << inter << "\033[0m\n";
-        return false;
+        return NULL;
     }
 
     // now we have trasnit function with airline if someone want same flight airline
-    bool transitFlight_airline_matters(string src, string inter, string des, string air)
+    Journey* transitFlight_airline_matters(string src, string inter, string des, string air)
     {
-
+        Journey* returnList = new Journey();
         for (int i = 0; i < vert; i++)
         {
             if (arr[i].head->data.departureCity == src)
@@ -537,16 +555,33 @@ public:
                                 node *second_half = arr[j].head->next;
                                 while (second_half)
                                 {
-                                    if (second_half->data.destinationCity == des && second_half->data.airline == air && second_half->data.date >= first_half->data.date)
+                                    if (second_half->data.destinationCity == des && second_half->data.airline == air)
                                     {
 
-                                        cout << "\033[1;32mTransit Flight Found with Airline " << air << ":\033[0m\n";
-                                        cout << "\033[1;33mFirst Half:\033[0m\n";
-                                        first_half->data.display();
-                                        cout << "\033[1;33mSecond Half:\033[0m\n";
-                                        second_half->data.display();
-                                        return true;
+                                        if (second_half->data.time1 > first_half->data.time2 && second_half->data.date == first_half->data.date && second_half->data.time1.size() >= first_half->data.time2.size())
+                                        {
+                                            cout << "\033[1;32mTransit Flight Found:\033[0m\n";
+                                            cout << "\033[1;33mFirst Half:\033[0m\n";
+                                            first_half->data.display();
+                                            returnList->insertFlight(first_half->data);
+                                            cout << "\033[1;33mSecond Half:\033[0m\n";
+                                            second_half->data.display();
+                                            returnList->insertFlight(second_half->data);
+                                            return returnList;
+                                        }
+                                        else if (second_half->data.date > first_half->data.date)
+                                        {
+                                            cout << "\033[1;32mTransit Flight Found:\033[0m\n";
+                                            cout << "\033[1;33mFirst Half:\033[0m\n";
+                                            first_half->data.display();
+                                            returnList->insertFlight(first_half->data);
+                                            cout << "\033[1;33mSecond Half:\033[0m\n";
+                                            second_half->data.display();
+                                            returnList->insertFlight(second_half->data);
+                                            return returnList;
+                                        }
                                     }
+
                                     second_half = second_half->next;
                                 }
                             }
@@ -558,67 +593,67 @@ public:
         }
 
         cout << "\033[1;31mNo transit flight found from " << src << " to " << des << " via " << inter << " with airline " << air << "\033[0m\n";
-        return false;
+        return NULL;
     }
     /****************************************************MID JOURNEY **************************** */
-    Journey planMultiLegJourney(string source, string stops[], int numStops, string destination)
-{
-    Journey journey; 
-    string currentCity = source;
-
-    
-    for (int i = 0; i <= numStops; i++)
+    Journey* planMultiLegJourney(string source, string stops[], int numStops, string destination)
     {
-        string nextCity = (i == numStops) ? destination : stops[i]; 
+        Journey* journey = new Journey();
+        string currentCity = source;
 
-        bool flightFound = false;
 
-        
-        for (int j = 0; j < vert; j++)
+        for (int i = 0; i <= numStops; i++)
         {
-            if (arr[j].head->data.departureCity == currentCity)
+            string nextCity = (i == numStops) ? destination : stops[i];
+
+            bool flightFound = false;
+
+
+            for (int j = 0; j < vert; j++)
             {
-                node *temp = arr[j].head->next;
-                while (temp)
+                if (arr[j].head->data.departureCity == currentCity)
                 {
-                    if (temp->data.destinationCity == nextCity)
+                    node* temp = arr[j].head->next;
+                    while (temp)
                     {
-                        
-                        if (!journey.head || temp->data.date > journey.tail->data.date )
+                        if (temp->data.destinationCity == nextCity)
                         {
-                            journey.insertFlight(temp->data); 
-                            flightFound = true;
-                            break;
+
+                            if (!journey->head || temp->data.date > journey->tail->data.date)
+                            {
+                                journey->insertFlight(temp->data);
+                                flightFound = true;
+                                break;
+                            }
+                            else if (temp->data.date == journey->tail->data.date && temp->data.time1.size() > journey->tail->data.time2.size()) 
+                            {
+                                journey->insertFlight(temp->data);
+                                flightFound = true;
+                                break;
+                            }
+
                         }
-                        else if (temp->data.date == journey.tail->data.date && temp->data.time1.size() > journey.tail->data.time2.size())
-                        {
-                            journey.insertFlight(temp->data); 
-                            flightFound = true;
-                            break;
-                        }
-                        
+                        temp = temp->next;
                     }
-                    temp = temp->next;
                 }
+
+                if (flightFound)
+                    break;
             }
 
-            if (flightFound)
-                break;
+            // If no flight is found for the current segment
+            if (!flightFound)
+            {
+                cout << RED << "No valid flight from " << currentCity << " to " << nextCity << RESET << endl;
+                journey->clearJourney(); // Cleanup
+                return journey;
+            }
+
+            currentCity = nextCity; // Move to the next city
         }
 
-        // If no flight is found for the current segment
-        if (!flightFound)
-        {
-            cout << RED << "No valid flight from " << currentCity << " to " << nextCity << RESET << endl;
-            journey.clearJourney(); // Cleanup
-            return journey;
-        }
-
-        currentCity = nextCity; // Move to the next city
+        return journey; // Return the completed journey
     }
-
-    return journey; // Return the completed journey
-}
 
 };
 

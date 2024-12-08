@@ -54,13 +54,7 @@ public:
 
     // Print the journey
     void printJourney()
-    {
-        if (!head)
-        {
-            cout << "No flights planned in the journey." << endl;
-            return;
-        }
-
+    {        
         JourneyNode *temp = head;
         cout << "Planned Flights:" << endl;
         while (temp)

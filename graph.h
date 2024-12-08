@@ -563,58 +563,64 @@ public:
     }
     /****************************************************MID JOURNEY **************************** */
     Journey planMultiLegJourney(string source, string stops[], int numStops, string destination)
+{
+    Journey journey; 
+    string currentCity = source;
+
+    
+    for (int i = 0; i <= numStops; i++)
     {
-        Journey journey; 
-        string currentCity = source;
+        string nextCity = (i == numStops) ? destination : stops[i]; 
 
-      
-        for (int i = 0; i <= numStops; i++)
+        bool flightFound = false;
+
+        
+        for (int j = 0; j < vert; j++)
         {
-            string nextCity = (i == numStops) ? destination : stops[i]; 
-
-            bool flightFound = false;
-
-            // Find the flight for the current location .. 
-            for (int j = 0; j < vert; j++)
+            if (arr[j].head->data.departureCity == currentCity)
             {
-                if (arr[j].head->data.departureCity == currentCity)
+                node *temp = arr[j].head->next;
+                while (temp)
                 {
-                    node *temp = arr[j].head->next;
-                    while (temp)
+                    if (temp->data.destinationCity == nextCity)
                     {
-                        if (temp->data.destinationCity == nextCity)
+                        
+                        if (!journey.head || temp->data.date > journey.tail->data.date )
                         {
-                            // this condition as..cehck that date of new flight is greater than prev...adding flight ..necessary check 
-                            if (!journey.head || temp->data.date > journey.tail->data.date)
-                            {
-                                journey.insertFlight(temp->data); 
-                                flightFound = true;
-                                break;
-                            }
-                            
-                            
+                            journey.insertFlight(temp->data); 
+                            flightFound = true;
+                            break;
                         }
-                        temp = temp->next;
+                        else if (temp->data.date == journey.tail->data.date && temp->data.time1 > journey.tail->data.time2)
+                        {
+                            journey.insertFlight(temp->data); 
+                            flightFound = true;
+                            break;
+                        }
+                        
                     }
+                    temp = temp->next;
                 }
-
-                if (flightFound)
-                    break;
             }
 
-            // If no flight is found for the current segment
-            if (!flightFound)
-            {
-                cout <<RED << "No valid flight from " << currentCity << " to " << nextCity << RESET << endl;
-                journey.clearJourney(); // Cleanup
-                return journey;
-            }
-
-            currentCity = nextCity; // Move to the next city
+            if (flightFound)
+                break;
         }
 
-        return journey; // Return the completed journey
+        // If no flight is found for the current segment
+        if (!flightFound)
+        {
+            cout << RED << "No valid flight from " << currentCity << " to " << nextCity << RESET << endl;
+            journey.clearJourney(); // Cleanup
+            return journey;
+        }
+
+        currentCity = nextCity; // Move to the next city
     }
+
+    return journey; // Return the completed journey
+}
+
 };
 
 

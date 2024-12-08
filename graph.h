@@ -591,7 +591,7 @@ public:
                             flightFound = true;
                             break;
                         }
-                        else if (temp->data.date == journey.tail->data.date && temp->data.time1 > journey.tail->data.time2)
+                        else if (temp->data.date == journey.tail->data.date && temp->data.time1.size() > journey.tail->data.time2.size())
                         {
                             journey.insertFlight(temp->data); 
                             flightFound = true;

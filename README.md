@@ -1,4 +1,3 @@
-```markdown
 # SkyNav AI
 
 SkyNav AI is an advanced navigation system built with C++ to provide intelligent routing and navigation solutions. This project leverages modern AI techniques to enhance user experience and optimize travel paths.
@@ -60,42 +59,3 @@ SkyNav AI is an advanced navigation system built with C++ to provide intelligent
 1. Clone the repository:
    ```sh
    git clone https://github.com/waris206/SkyNav_ai.git
-   ```
-2. Open the project in Visual Studio.
-3. Build the solution to compile the project.
-
-### Usage
-
-1. Run the executable file after building the project.
-2. Enjoy the welcome screen upon startup.
-3. Explore the following features:
-   - Visualize paths dynamically using SFML.
-   - Choose between travel modes: transit, flight, or direct.
-   - Filter paths by date, time, or cost.
-   - Utilize Dijkstra's algorithm for efficient route calculations.
-   - View graphical representations of data and path adjustments.
-   - Manage layovers and visualize transitions dynamically.
-4. Upon exit, enjoy the colorful goodbye screen and review the contributors list.
-
-## Repository Structure
-
-- **Source Files**: Core navigation and logic implementation.
-- **Headers**: Modular code organization using headers like `GraphVisualizer.h`, `ascii.h`, and `color.h`.
-- **Assets**: Includes audio files, ASCII art, and data files for dynamic input.
-
-## Contributors
-
-This project was collaboratively developed by:
-- **Muhammad Akash Waris**
-- **Habib Ahmed**
-- **Abdullah Noman**
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
----
-
-Happy navigating with SkyNav AI!
-```
-

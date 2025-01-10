@@ -1,6 +1,7 @@
 # SkyNav AI
+Here’s a shortened version of your statement:
 
-SkyNav AI is an advanced navigation system built with C++ to provide intelligent routing and navigation solutions. This project leverages modern AI techniques to enhance user experience and optimize travel paths.
+**SkyNav** is an advanced navigation system built with C++ to provide optimized routing and navigation solutions.
 
 ## Features
 

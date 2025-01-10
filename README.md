@@ -14,7 +14,6 @@
 
 - **Shortest and Cheapest Route Finder**:
   - Dijkstra’s algorithm implementation for shortest paths by time and cost.
-  - Dynamic computation of optimal paths with evaluated and non-evaluated nodes visually distinguished.
   - Highlighting optimal routes for better clarity.
 
 - **Custom Flight Paths and Preferences**:

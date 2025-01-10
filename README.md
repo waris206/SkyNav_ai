@@ -1,4 +1,4 @@
-# SkyNav AI
+# SkyNav
 
 **SkyNav** is an advanced navigation system built with C++ to provide optimized routing and navigation solutions.
 
@@ -58,10 +58,7 @@
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/waris206/SkyNav_ai.git
-   ```
-2. Open the project in Visual Studio.
-3. Build the solution to compile the project.
+   git clone https://github.com/waris206/SkyNav.git
 
 ### Usage
 
